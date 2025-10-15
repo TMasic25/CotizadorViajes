@@ -1439,7 +1439,7 @@
                     </div>
 
                     <div class="quotation-tariff-box">
-                        <span>Tarifa + Peaje${trip.ferry > 0 ? ' + Ferry' : ''}</span>
+                        <span>Tarifa${trip.ferry > 0 ? ' + Ferry' : ''}</span>
                         <span class="quotation-tariff-amount">${formatCurrency(trip.tarifaTotal)}</span>
                     </div>
 
@@ -1516,7 +1516,7 @@
             text += `📏 *Distancia:* ${currentTrip.distance} km\n`;
             text += `⏱️ *Tiempo:* ${currentTrip.duration} min\n\n`;
             
-            text += `💰 *Tarifa + Peaje`;
+            text += `💰 *Tarifa`;
             if (currentTrip.ferry > 0) {
                 text += ` + Ferry`;
             }
