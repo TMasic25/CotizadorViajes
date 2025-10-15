@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <title>Calculadora de Viajes - Transportes Masic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #E8F4F6 0%, #D1EEF2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(27, 154, 170, 0.08);
+            padding: 32px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(27, 154, 170, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            gap: 16px;
+        }
+
+        .logo-container {
+            width: 200px;
+            margin-bottom: 16px;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        h1 {
+            color: #1B9AAA;
+            font-size: 26px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .rates-display {
+            color: #4A4A4A;
+            font-size: 13px;
+            margin-bottom: 12px;
+            line-height: 1.7;
+            background: #F8FAFB;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #1B9AAA;
+        }
+
+        .edit-btn, .settings-btn {
+            background: #F8FAFB;
+            border: 1px solid #E5E7EB;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4A4A4A;
+            transition: all 0.2s;
+            font-weight: 500;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-btn:hover, .settings-btn:hover {
+            background: #E5E7EB;
+            border-color: #1B9AAA;
+        }
+
+        .edit-btn:active, .settings-btn:active {
+            transform: scale(0.98);
+        }
+
+        .settings-btn.active {
+            background: #D1FAE5;
+            color: #065F46;
+            border-color: #10B981;
+        }
+
+        .rates-editor {
+            background: #F0F9FA;
+            padding: 24px;
+            border-radius: 12px;
+            margin-top: 16px;
+            border: 1px solid #B2EBF2;
+        }
+
+        .rates-section {
+            margin-bottom: 24px;
+        }
+
+        .rates-section h4 {
+            color: #1B9AAA;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .rates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #4A4A4A;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.2s;
+            background: white;
+            color: #1F2937;
+            min-height: 48px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #1B9AAA;
+            box-shadow: 0 0 0 3px rgba(27, 154, 170, 0.1);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A4A4A' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: #1B9AAA;
+            color: white;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(27, 154, 170, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: #157A87;
+            box-shadow: 0 4px 12px rgba(27, 154, 170, 0.3);
+        }
+
+        .btn-success {
+            background: #10B981;
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6B7280;
+            color: white;
+            box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: #4B5563;
+        }
+
+        .btn-warning {
+            background: #F59E0B;
+            color: white;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-warning:hover {
+            background: #D97706;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Estilos para tabla de costos */
+        .costs-table-container {
+            margin-top: 28px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #1B9AAA;
+            overflow: hidden;
+        }
+
+        .costs-table-header {
+            background: linear-gradient(135deg, #1B9AAA 0%, #157A87 100%);
+            color: white;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .costs-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .costs-table th {
+            background: #F0F9FA;
+            color: #1B9AAA;
+            font-weight: 600;
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 2px solid #1B9AAA;
+        }
+
+        .costs-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 15px;
+            color: #4A4A4A;
+        }
+
+        .costs-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .costs-table tr:hover {
+            background: #F8FAFB;
+        }
+
+        .costs-table .item-name {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .costs-table .cost-value {
+            text-align: right;
+            font-weight: 600;
+            color: #1B9AAA;
+        }
+
+        .costs-table .detail-value {
+            text-align: right;
+            font-weight: 700;
+            color: #059669;
+            font-size: 16px;
+        }
+
+        .costs-table-footer {
+            background: #F0F9FA;
+            border-top: 3px solid #1B9AAA;
+        }
+
+        .costs-table-footer td {
+            padding: 16px 12px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1B9AAA;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #1B9AAA 0%, #157A87 100%);
+            color: white;
+            padding: 28px;
+            border-radius: 16px;
+            margin-top: 28px;
+            box-shadow: 0 8px 24px rgba(27, 154, 170, 0.25);
+        }
+
+        .result-content {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 24px;
+            border-radius: 12px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+
+        .result-total {
+            border-top: 2px solid rgba(255, 255, 255, 0.3);
+            margin-top: 12px;
+            padding-top: 12px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .quotation-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            margin-top: 28px;
+            border: 3px solid #1B9AAA;
+            position: relative;
+        }
+
+        .quotation-logo {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 200px;
+            height: auto;
+        }
+
+        .quotation-header {
+            text-align: center;
+            border-bottom: 2px solid #E5E7EB;
+            padding-bottom: 24px;
+            padding-top: 80px;
+            margin-bottom: 28px;
+        }
+
+        .quotation-title {
+            font-size: 28px;
+            color: #1B9AAA;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .quotation-client {
+            font-size: 22px;
+            color: #1B9AAA;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .quotation-details {
+            margin: 28px 0;
+        }
+
+        .quotation-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #E5E7EB;
+            font-size: 16px;
+        }
+
+        .quotation-row:last-child {
+            border-bottom: none;
+        }
+
+        .quotation-row strong {
+            color: #4A4A4A;
+        }
+
+        .quotation-tariff-box {
+            background: #F8FAFB;
+            border: 2px solid #E5E7EB;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .quotation-tariff-amount {
+            font-size: 26px;
+            color: #1B9AAA;
+            font-weight: 700;
+        }
+
+        .quotation-discount-row {
+            background: #FEF3C7;
+            border: 2px solid #FCD34D;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 16px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #92400E;
+        }
+
+        .quotation-discount-amount {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .quotation-total-row {
+            background: linear-gradient(135deg, #E8F4F6 0%, #D1EEF2 100%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #1B9AAA;
+            margin-top: 24px;
+            padding: 24px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #1B9AAA;
+        }
+
+        .quotation-buttons {
+            margin-top: 28px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-share {
+            flex: 1;
+            background: #F59E0B;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+            min-height: 56px;
+        }
+
+        .btn-share:hover {
+            background: #D97706;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+        }
+
+        .btn-share:active {
+            transform: translateY(0);
+        }
+
+        .btn-print {
+            flex: 1;
+            background: #10B981;
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+            min-height: 56px;
+        }
+
+        .btn-print:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-print:active {
+            transform: translateY(0);
+        }
+
+        .status-message {
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid;
+        }
+
+        .status-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border-color: #10B981;
+        }
+
+        .status-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border-color: #EF4444;
+        }
+
+        .status-warning {
+            background: #FEF3C7;
+            color: #92400E;
+            border-color: #FCD34D;
+        }
+
+        .status-info {
+            background: #DBEAFE;
+            color: #1E40AF;
+            border-color: #3B82F6;
+        }
+
+        .settings-panel {
+            background: #F0F9FA;
+            border: 2px solid #B2EBF2;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .history-card {
+            border: 2px solid #E5E7EB;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .history-card:hover {
+            border-color: #1B9AAA;
+            box-shadow: 0 4px 12px rgba(27, 154, 170, 0.1);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #EF4444;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 20px;
+            min-height: 44px;
+            min-width: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+
+        .history-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .history-total {
+            text-align: right;
+            font-weight: bold;
+            color: #1B9AAA;
+            font-size: 15px;
+        }
+
+        .info-box {
+            background: #FEF3C7;
+            border: 2px solid #FCD34D;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: #78350F;
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+
+        .code-box {
+            background: #1F2937;
+            color: #10B981;
+            padding: 16px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            overflow-x: auto;
+            margin: 12px 0;
+            white-space: pre-wrap;
+            border: 1px solid #374151;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 20px;
+                border-radius: 12px;
+            }
+
+            .logo-container {
+                width: 160px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .header {
+                flex-direction: column;
+            }
+
+            .rates-grid,
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .history-details {
+                grid-template-columns: 1fr;
+            }
+
+            .quotation-card {
+                padding: 24px 16px;
+            }
+
+            .quotation-logo {
+                position: static;
+                width: 160px;
+                margin: 0 auto 16px;
+                display: block;
+            }
+
+            .quotation-header {
+                padding-top: 0;
+            }
+
+            .quotation-buttons {
+                flex-direction: column;
+            }
+
+            .result-row {
+                font-size: 14px;
+            }
+
+            .result-total {
+                font-size: 18px;
+            }
+
+            .costs-table {
+                font-size: 13px;
+            }
+
+            .costs-table th,
+            .costs-table td {
+                padding: 10px 8px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .card {
+                box-shadow: none;
+                border: none;
+            }
+            .btn, .settings-btn, .edit-btn, .quotation-buttons {
+                display: none !important;
+            }
+            .quotation-card {
+                box-shadow: none;
+                page-break-inside: avoid;
+            }
+            .costs-table-container {
+                display: none;
+            }
+        }
+
+        .discount-selector-container {
+            position: relative;
+        }
+
+        .discount-selector {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .discount-selector select {
+            flex: 1;
+        }
+
+        .discount-edit-btn {
+            background: #F59E0B;
+            color: white;
+            border: none;
+            padding: 0 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            min-width: 80px;
+            min-height: 48px;
+        }
+
+        .discount-edit-btn:hover {
+            background: #D97706;
+        }
+
+        .discount-edit-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div style="flex: 1;">
+                    <div class="logo-container">
+                        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%201-FHIi6qXGRfyVgq4j52QPmNZS7p6s3U.png" alt="Transportes Masic">
+                    </div>
+                    <h1>Calculadora de Viajes</h1>
+                    <div id="ratesDisplay" class="rates-display"></div>
+                    <div id="statusMessage"></div>
+                </div>
+                <button id="settingsBtn" class="settings-btn">⚙️</button>
+            </div>
+
+            <div id="ratesEditor" class="rates-editor hidden">
+                <div class="rates-section">
+                    <h4>📏 Tarifas por Kilómetro</h4>
+                    <div class="rates-grid">
+                        <div class="form-group">
+                            <label>< 15 km (CLP/km)</label>
+                            <input type="number" id="priceKm1" value="350">
+                        </div>
+                        <div class="form-group">
+                            <label>15-50 km (CLP/km)</label>
+                            <input type="number" id="priceKm2" value="500">
+                        </div>
+                        <div class="form-group">
+                            <label>51-99 km (CLP/km)</label>
+                            <input type="number" id="priceKm3" value="700">
+                        </div>
+                        <div class="form-group">
+                            <label>≥ 100 km (CLP/km)</label>
+                            <input type="number" id="priceKm4" value="1030">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rates-section">
+                    <h4>⏱️ Tarifas por Minuto</h4>
+                    <div class="rates-grid">
+                        <div class="form-group">
+                            <label>< 20 min (CLP/min)</label>
+                            <input type="number" id="priceMin1" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>20-59 min (CLP/min)</label>
+                            <input type="number" id="priceMin2" value="300">
+                        </div>
+                        <div class="form-group">
+                            <label>≥ 60 min (CLP/min)</label>
+                            <input type="number" id="priceMin3" value="400">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rates-section">
+                    <h4>💰 Tarifa Base</h4>
+                    <div class="form-group">
+                        <label>Tarifa Base (CLP) - Se suma SIEMPRE a todas las tarifas</label>
+                        <input type="number" id="baseFare" value="3000">
+                    </div>
+                </div>
+
+                <div class="rates-section">
+                    <h4>🎁 Descuentos Disponibles</h4>
+                    <div class="rates-grid">
+                        <div class="form-group">
+                            <label>Descuento 1 (%)</label>
+                            <input type="number" id="discount1" value="5" min="0" max="100" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Descuento 2 (%)</label>
+                            <input type="number" id="discount2" value="10" min="0" max="100" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Descuento 3 (%)</label>
+                            <input type="number" id="discount3" value="15" min="0" max="100" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Descuento 4 (%)</label>
+                            <input type="number" id="discount4" value="20" min="0" max="100" step="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rates-section">
+                    <h4>🔧 Costos Operacionales</h4>
+                    <div class="rates-grid">
+                        <div class="form-group">
+                            <label>Precio Diesel (CLP/litro)</label>
+                            <input type="number" id="costDiesel" value="1080" step="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Costo Cambio Aceite (CLP)</label>
+                            <input type="number" id="costOil" value="350000" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Costo Cambio Pastillas (CLP)</label>
+                            <input type="number" id="costBrakes" value="180000" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label>Costo Cambio Neumáticos (CLP)</label>
+                            <input type="number" id="costTires" value="300000" step="1000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="saveRates()">💾 Guardar Tarifas y Configuración</button>
+                    <button class="btn btn-secondary" onclick="toggleRatesEditor()">Cancelar</button>
+                </div>
+            </div>
+
+            <div id="settingsPanel" class="settings-panel hidden">
+                <h3 style="margin-bottom: 16px; color: #1B9AAA;">☁️ Conexión con Google Sheets</h3>
+                
+                <div class="info-box">
+                    <strong>📋 Instrucciones para conectar con Google Sheets:</strong>
+                    <ol style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>Abre tu Google Sheet donde quieres guardar los viajes</li>
+                        <li>Ve a <strong>Extensiones → Apps Script</strong></li>
+                        <li>Borra todo el código y copia el código de abajo</li>
+                        <li>Guarda (Ctrl+S) y luego <strong>Implementar → Nueva implementación</strong></li>
+                        <li>Tipo: <strong>Aplicación web</strong></li>
+                        <li>Ejecutar como: <strong>Yo</strong> | Acceso: <strong>Cualquier persona</strong></li>
+                        <li>Copia la URL que te da y pégala aquí abajo</li>
+                    </ol>
+                </div>
+
+                <div class="code-box">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    var data = JSON.parse(e.postData.contents);
+    
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['Fecha', 'Nombre Cliente', 'Origen', 'Destino', 
+                       'Distancia', 'Tiempo', 'Tarifa/Km Aplicada', 
+                       'Tarifa/Min Aplicada', 'Peaje', 'Ferry/Transbordador', 
+                       'Subtotal', 'Descuento aplicado', 'Total a Pagar']);
+    }
+    
+    sheet.appendRow([
+      data.date, data.client || 'Sin nombre', data.origin,
+      data.destination, data.distance, data.duration,
+      data.rateKm, data.rateMin, data.toll || 0, data.ferry || 0,
+      data.fare, data.discountAmount || 0, data.total
+    ]);
+    
+    return ContentService.createTextOutput(
+      JSON.stringify({success: true})
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch(error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({success: false, error: error.toString()})
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}</div>
+
+                <div class="form-group">
+                    <label>URL de tu Web App de Google Apps Script</label>
+                    <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/...../exec">
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 16px;" onclick="saveScriptUrl()">💾 Guardar URL</button>
+                <button class="btn btn-success" style="width: 100%;" onclick="exportToCSV()">📊 Exportar Historial a Excel/CSV</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <button class="edit-btn" onclick="toggleRatesEditor()">✏️ Editar Tarifas y Descuentos</button>
+            </div>
+
+            <div class="form-group">
+                <label>👤 Nombre del Cliente</label>
+                <input type="text" id="clientName" placeholder="Nombre del cliente (opcional)">
+            </div>
+
+            <div class="form-group">
+                <label>📍 Origen</label>
+                <input type="text" id="origin" placeholder="Dirección de origen">
+            </div>
+
+            <div class="form-group">
+                <label>📍 Destino</label>
+                <input type="text" id="destination" placeholder="Dirección de destino">
+            </div>
+
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>📏 Distancia (km)</label>
+                    <input type="number" step="0.1" id="distance" placeholder="0.0">
+                </div>
+                <div class="form-group">
+                    <label>⏱️ Tiempo (min)</label>
+                    <input type="number" id="duration" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>🛣️ Peaje (CLP)</label>
+                    <input type="number" id="toll" placeholder="0" value="0">
+                </div> 
+                <div class="form-group">
+                    <label>⛴️ Ferry (CLP)</label>
+                    <input type="number" id="ferry" placeholder="0" value="0">
+                </div>
+            </div>
+
+            <div class="form-group discount-selector-container">
+                <label>🎁 Descuento Aplicado</label>
+                <div class="discount-selector">
+                    <select id="discountSelect">
+                        <option value="0">Sin descuento</option>
+                    </select>
+                    <button class="discount-edit-btn" onclick="toggleRatesEditor()" title="Editar descuentos disponibles">✏️ Editar</button>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="calculateFare()">💰 Calcular Tarifa</button>
+                <button class="btn btn-success" onclick="openGoogleMaps()">🗺️ Ver Ruta</button>
+            </div>
+
+            <div id="costsTable"></div>
+            <div id="result"></div>
+            <div id="quotation"></div>
+        </div>
+
+        <div id="historySection" class="card hidden">
+            <div class="history-header">
+                <h2 style="color: #1B9AAA; font-size: 22px;">📋 Historial (<span id="historyCount">0</span> viajes)</h2>
+                <button class="btn btn-secondary" style="padding: 10px 16px; font-size: 14px;" onclick="clearHistory()">🗑️ Limpiar</button>
+            </div>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        let history = [];
+        let rates = {
+            baseFare: 3000,
+            kmRanges: [
+                { max: 15, price: 350 },
+                { max: 50, price: 500 },
+                { max: 99, price: 700 },
+                { max: Infinity, price: 1030 }
+            ],
+            minRanges: [
+                { max: 20, price: 100 },
+                { max: 59, price: 300 },
+                { max: Infinity, price: 400 }
+            ],
+            discounts: [5, 10, 15, 20],
+            operationalCosts: {
+                diesel: 1080,
+                oil: 350000,
+                brakes: 180000,
+                tires: 300000
+            }
+        };
+        let scriptUrl = '';
+        let currentTrip = null;
+
+        function loadData() {
+            try {
+                const savedHistory = localStorage.getItem('transportHistory');
+                if (savedHistory) history = JSON.parse(savedHistory);
+
+                const savedRates = localStorage.getItem('transportRates');
+                if (savedRates) {
+                    rates = JSON.parse(savedRates);
+                    if (!rates.discounts) {
+                        rates.discounts = [5, 10, 15, 20];
+                    }
+                    if (!rates.operationalCosts) {
+                        rates.operationalCosts = {
+                            diesel: 1080,
+                            oil: 350000,
+                            brakes: 180000,
+                            tires: 300000
+                        };
+                    }
+                }
+
+                const savedScriptUrl = localStorage.getItem('googleScriptUrl');
+                if (savedScriptUrl) scriptUrl = savedScriptUrl;
+
+                updateRatesDisplay();
+                updateRatesInputs();
+                updateDiscountSelect();
+                updateHistory();
+                
+                if (savedScriptUrl) {
+                    document.getElementById('scriptUrl').value = savedScriptUrl;
+                    document.getElementById('settingsBtn').classList.add('active');
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showStatus('Error al cargar datos guardados', 'error');
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-CL', {
+                style: 'currency',
+                currency: 'CLP',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function getPricePerKm(km) {
+            if (km < 15) return rates.kmRanges[0].price;
+            if (km <= 50) return rates.kmRanges[1].price;
+            if (km <= 99) return rates.kmRanges[2].price;
+            return rates.kmRanges[3].price;
+        }
+
+        function getPricePerMin(min) {
+            if (min < 20) return rates.minRanges[0].price;
+            if (min <= 59) return rates.minRanges[1].price;
+            return rates.minRanges[2].price;
+        }
+
+        function calculateOperationalCosts(km) {
+            const dieselCost = Math.round((km / 7) * rates.operationalCosts.diesel);
+            const oilCost = Math.round((km / 10000) * rates.operationalCosts.oil);
+            const brakesCost = Math.round((km / 20000) * rates.operationalCosts.brakes);
+            const tiresCost = Math.round((km / 40000) * rates.operationalCosts.tires);
+            const total = dieselCost + oilCost + brakesCost + tiresCost;
+            
+            return {
+                diesel: dieselCost,
+                oil: oilCost,
+                brakes: brakesCost,
+                tires: tiresCost,
+                total: total
+            };
+        }
+
+        function displayCostsTable(km) {
+            const costs = calculateOperationalCosts(km);
+            
+            document.getElementById('costsTable').innerHTML = `
+                <div class="costs-table-container">
+                    <div class="costs-table-header">
+                        💼 COSTOS OPERACIONALES DEL VIAJE
+                    </div>
+                    <table class="costs-table">
+                        <thead>
+                            <tr>
+                                <th>Item Mantención</th>
+                                <th style="text-align: center;">Km</th>
+                                <th style="text-align: right;">Costo</th>
+                                <th style="text-align: right;">Detalle x viaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="item-name">🛢️ Costo Diesel</td>
+                                <td style="text-align: center;">-</td>
+                                <td class="cost-value">${formatCurrency(rates.operationalCosts.diesel)}</td>
+                                <td class="detail-value">${formatCurrency(costs.diesel)}</td>
+                            </tr>
+                            <tr>
+                                <td class="item-name">🔧 Cambio Aceite</td>
+                                <td style="text-align: center;">10,000</td>
+                                <td class="cost-value">${formatCurrency(rates.operationalCosts.oil)}</td>
+                                <td class="detail-value">${formatCurrency(costs.oil)}</td>
+                            </tr>
+                            <tr>
+                                <td class="item-name">🔴 Cambio Pastillas</td>
+                                <td style="text-align: center;">20,000</td>
+                                <td class="cost-value">${formatCurrency(rates.operationalCosts.brakes)}</td>
+                                <td class="detail-value">${formatCurrency(costs.brakes)}</td>
+                            </tr>
+                            <tr>
+                                <td class="item-name">🚗 Cambio Neumáticos</td>
+                                <td style="text-align: center;">40,000</td>
+                                <td class="cost-value">${formatCurrency(rates.operationalCosts.tires)}</td>
+                                <td class="detail-value">${formatCurrency(costs.tires)}</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="costs-table-footer">
+                            <tr>
+                                <td colspan="3" style="text-align: right;">TOTAL COSTOS:</td>
+                                <td style="text-align: right; color: #059669;">${formatCurrency(costs.total)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+        }
+
+        function updateRatesDisplay() {
+            document.getElementById('ratesDisplay').innerHTML = `
+                <strong>Tarifa Base:</strong> ${formatCurrency(rates.baseFare)} (se suma siempre)<br>
+                <strong>Tarifas por KM:</strong> <15km: ${formatCurrency(rates.kmRanges[0].price)}/km | 15-50km: ${formatCurrency(rates.kmRanges[1].price)}/km | 51-99km: ${formatCurrency(rates.kmRanges[2].price)}/km | ≥100km: ${formatCurrency(rates.kmRanges[3].price)}/km<br>
+                <strong>Tarifas por MIN:</strong> <20min: ${formatCurrency(rates.minRanges[0].price)}/min | 20-59min: ${formatCurrency(rates.minRanges[1].price)}/min | ≥60min: ${formatCurrency(rates.minRanges[2].price)}/min
+            `;
+        }
+
+        function updateRatesInputs() {
+            document.getElementById('baseFare').value = rates.baseFare;
+            document.getElementById('priceKm1').value = rates.kmRanges[0].price;
+            document.getElementById('priceKm2').value = rates.kmRanges[1].price;
+            document.getElementById('priceKm3').value = rates.kmRanges[2].price;
+            document.getElementById('priceKm4').value = rates.kmRanges[3].price;
+            document.getElementById('priceMin1').value = rates.minRanges[0].price;
+            document.getElementById('priceMin2').value = rates.minRanges[1].price;
+            document.getElementById('priceMin3').value = rates.minRanges[2].price;
+            
+            document.getElementById('discount1').value = rates.discounts[0] || 5;
+            document.getElementById('discount2').value = rates.discounts[1] || 10;
+            document.getElementById('discount3').value = rates.discounts[2] || 15;
+            document.getElementById('discount4').value = rates.discounts[3] || 20;
+            
+            document.getElementById('costDiesel').value = rates.operationalCosts.diesel;
+            document.getElementById('costOil').value = rates.operationalCosts.oil;
+            document.getElementById('costBrakes').value = rates.operationalCosts.brakes;
+            document.getElementById('costTires').value = rates.operationalCosts.tires;
+        }
+
+        function updateDiscountSelect() {
+            const select = document.getElementById('discountSelect');
+            select.innerHTML = '<option value="0">Sin descuento</option>';
+            
+            rates.discounts.forEach((discount, index) => {
+                if (discount > 0) {
+                    const option = document.createElement('option');
+                    option.value = discount;
+                    option.textContent = `${discount}% de descuento`;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function toggleRatesEditor() {
+            document.getElementById('ratesEditor').classList.toggle('hidden');
+        }
+
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('hidden');
+        }
+
+        document.getElementById('settingsBtn').addEventListener('click', toggleSettings);
+
+        function saveRates() {
+            rates.baseFare = parseFloat(document.getElementById('baseFare').value) || 3000;
+            rates.kmRanges[0].price = parseFloat(document.getElementById('priceKm1').value) || 350;
+            rates.kmRanges[1].price = parseFloat(document.getElementById('priceKm2').value) || 500;
+            rates.kmRanges[2].price = parseFloat(document.getElementById('priceKm3').value) || 700;
+            rates.kmRanges[3].price = parseFloat(document.getElementById('priceKm4').value) || 1030;
+            rates.minRanges[0].price = parseFloat(document.getElementById('priceMin1').value) || 100;
+            rates.minRanges[1].price = parseFloat(document.getElementById('priceMin2').value) || 300;
+            rates.minRanges[2].price = parseFloat(document.getElementById('priceMin3').value) || 400;
+
+            rates.discounts[0] = parseFloat(document.getElementById('discount1').value) || 0;
+            rates.discounts[1] = parseFloat(document.getElementById('discount2').value) || 0;
+            rates.discounts[2] = parseFloat(document.getElementById('discount3').value) || 0;
+            rates.discounts[3] = parseFloat(document.getElementById('discount4').value) || 0;
+            
+            rates.operationalCosts.diesel = parseFloat(document.getElementById('costDiesel').value) || 1080;
+            rates.operationalCosts.oil = parseFloat(document.getElementById('costOil').value) || 350000;
+            rates.operationalCosts.brakes = parseFloat(document.getElementById('costBrakes').value) || 180000;
+            rates.operationalCosts.tires = parseFloat(document.getElementById('costTires').value) || 300000;
+
+            localStorage.setItem('transportRates', JSON.stringify(rates));
+            updateRatesDisplay();
+            updateDiscountSelect();
+            toggleRatesEditor();
+            showStatus('✓ Tarifas y costos actualizados correctamente', 'success');
+        }
+
+        function saveScriptUrl() {
+            const url = document.getElementById('scriptUrl').value;
+            if (!url.trim()) {
+                showStatus('Por favor ingresa una URL válida', 'error');
+                return;
+            }
+            scriptUrl = url;
+            localStorage.setItem('googleScriptUrl', url);
+            document.getElementById('settingsBtn').classList.add('active');
+            showStatus('✓ URL guardada. Los viajes se guardarán en Google Sheets.', 'success');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.innerHTML = `${icons[type]} ${message}`;
+            setTimeout(() => statusDiv.innerHTML = '', 5000);
+        }
+
+        async function calculateFare() {
+            const clientName = document.getElementById('clientName').value || 'Sin nombre';
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            const distance = parseFloat(document.getElementById('distance').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+            const toll = parseFloat(document.getElementById('toll').value) || 0;
+            const ferry = parseFloat(document.getElementById('ferry').value) || 0;
+            const discountPercent = parseFloat(document.getElementById('discountSelect').value) || 0;
+
+            if (!origin || !destination || isNaN(distance) || isNaN(duration) || distance <= 0 || duration <= 0) {
+                showStatus('Por favor completa todos los campos con valores válidos', 'error');
+                return;
+            }
+
+            showStatus('Calculando tarifa...', 'info');
+
+            const pricePerKm = getPricePerKm(distance);
+            const pricePerMin = getPricePerMin(duration);
+
+            let calculatedFare = (distance * pricePerKm) + (duration * pricePerMin);
+            let fareWithoutToll = rates.baseFare + calculatedFare;
+            let tarifaTotal = fareWithoutToll + toll + ferry;
+            let discountAmount = 0;
+            if (discountPercent > 0) {
+                discountAmount = Math.round((tarifaTotal * discountPercent) / 100);
+            }
+            const total = Math.round(tarifaTotal - discountAmount);
+            
+            let appliedRule = `Base: ${formatCurrency(rates.baseFare)} + Calculado: ${distance} km × ${formatCurrency(pricePerKm)}/km + ${duration} min × ${formatCurrency(pricePerMin)}/min`;
+
+            const operationalCosts = calculateOperationalCosts(distance);
+
+            const trip = {
+                id: Date.now(),
+                date: new Date().toLocaleString('es-CL'),
+                client: clientName,
+                origin,
+                destination,
+                distance,
+                duration,
+                rateKm: pricePerKm,
+                rateMin: pricePerMin,
+                toll,
+                ferry,
+                discountPercent,
+                discountAmount,
+                fare: Math.round(fareWithoutToll),
+                tarifaTotal: Math.round(tarifaTotal),
+                total,
+                operationalCosts: operationalCosts,
+                rule: appliedRule
+            };
+
+            currentTrip = trip;
+
+            displayCostsTable(distance);
+
+            document.getElementById('result').innerHTML = `
+                <div class="result-card">
+                    <h3 style="margin-bottom: 16px; font-size: 20px;">Resultado del Viaje</h3>
+                    <div class="result-content">
+                        ${clientName !== 'Sin nombre' ? `<div class="result-row"><span>Cliente:</span><span><strong>${clientName}</strong></span></div>` : ''}
+                        <div class="result-row"><span>Distancia:</span><span><strong>${distance} km</strong></span></div>
+                        <div class="result-row"><span>Tiempo:</span><span><strong>${duration} min</strong></span></div>
+                        <div class="result-row"><span>Tarifa Base:</span><span><strong>${formatCurrency(rates.baseFare)}</strong></span></div>
+                        <div class="result-row"><span>Tarifa/km aplicada:</span><span><strong>${formatCurrency(pricePerKm)}</strong></span></div>
+                        <div class="result-row"><span>Tarifa/min aplicada:</span><span><strong>${formatCurrency(pricePerMin)}</strong></span></div>
+                        ${toll > 0 ? `<div class="result-row"><span>+ Peaje:</span><span><strong>${formatCurrency(toll)}</strong></span></div>` : ''}
+                        ${ferry > 0 ? `<div class="result-row"><span>+ Ferry/Transbordador:</span><span><strong>${formatCurrency(ferry)}</strong></span></div>` : ''}
+                        <div class="result-row"><span>= Tarifa Total:</span><span><strong>${formatCurrency(trip.tarifaTotal)}</strong></span></div>
+                        ${discountPercent > 0 ? `<div class="result-row" style="color: #F59E0B;"><span>- Descuento (${discountPercent}%):</span><span><strong>-${formatCurrency(discountAmount)}</strong></span></div>` : ''}
+                        <div class="result-row result-total"><span>TOTAL A PAGAR:</span><span>${formatCurrency(total)}</span></div>
+                        <div class="result-row" style="border-top: 2px solid rgba(255,255,255,0.3); margin-top: 12px; padding-top: 12px; color: #FCD34D;">
+                            <span>💼 Costos Operacionales:</span><span><strong>${formatCurrency(operationalCosts.total)}</strong></span>
+                        </div>
+                        <div class="result-row" style="background: rgba(255,255,255,0.15); padding: 12px; border-radius: 8px; font-size: 18px; font-weight: 700;">
+                            <span>📊 Utilidad Bruta:</span><span>${formatCurrency(total - operationalCosts.total)}</span>
+                        </div>
+                        <div style="font-size: 12px; margin-top: 12px; opacity: 0.9;">${appliedRule}</div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button class="btn btn-warning" style="width: 100%;" onclick="generateQuotation()">📄 Generar Cotización Profesional</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            history.unshift(trip);
+            if (history.length > 50) history = history.slice(0, 50);
+            localStorage.setItem('transportHistory', JSON.stringify(history));
+            updateHistory();
+
+            if (scriptUrl) {
+                await syncToGoogleSheets(trip);
+                showStatus('✓ Viaje guardado en Google Sheets', 'success');
+            } else {
+                showStatus('✓ Viaje calculado (configura Google Sheets para sincronizar)', 'warning');
+            }
+        }
+
+        function generateQuotation() {
+            if (!currentTrip) {
+                showStatus('Primero calcula una tarifa', 'warning');
+                return;
+            }
+
+            const trip = currentTrip;
+            
+            document.getElementById('quotation').innerHTML = `
+                <div class="quotation-card">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%201-FHIi6qXGRfyVgq4j52QPmNZS7p6s3U.png" alt="Transportes Masic" class="quotation-logo">
+                    
+                    <div class="quotation-header">
+                        <div class="quotation-title">COTIZACIÓN DE VIAJE</div>
+                        ${trip.client !== 'Sin nombre' ? `<div class="quotation-client">${trip.client}</div>` : ''}
+                        <div style="color: #6B7280; font-size: 14px;">${trip.date}</div>
+                    </div>
+
+                    <div class="quotation-details">
+                        <div class="quotation-row">
+                            <strong>Origen:</strong>
+                            <span>${trip.origin}</span>
+                        </div>
+                        <div class="quotation-row">
+                            <strong>Destino:</strong>
+                            <span>${trip.destination}</span>
+                        </div>
+                        <div class="quotation-row">
+                            <strong>Distancia:</strong>
+                            <span>${trip.distance} km</span>
+                        </div>
+                        <div class="quotation-row">
+                            <strong>Tiempo estimado:</strong>
+                            <span>${trip.duration} minutos</span>
+                        </div>
+                    </div>
+
+                    <div class="quotation-tariff-box">
+                        <span>Tarifa + Peaje${trip.ferry > 0 ? ' + Ferry' : ''}</span>
+                        <span class="quotation-tariff-amount">${formatCurrency(trip.tarifaTotal)}</span>
+                    </div>
+
+                    ${trip.discountPercent > 0 ? `
+                        <div class="quotation-discount-row">
+                            <span>Descuento aplicado (${trip.discountPercent}%)</span>
+                            <span class="quotation-discount-amount">-${formatCurrency(trip.discountAmount)}</span>
+                        </div>
+                    ` : ''}
+
+                    <div class="quotation-total-row">
+                        <span>TOTAL A PAGAR</span>
+                        <span>${formatCurrency(trip.total)}</span>
+                    </div>
+
+                    <div class="quotation-buttons">
+                        <button class="btn-share" onclick="shareQuotation()">
+                            📤 Compartir
+                        </button>
+                        <button class="btn-print" onclick="window.print()">
+                            🖨️ Imprimir
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('quotation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            showStatus('✓ Cotización generada correctamente', 'success');
+        }
+
+        async function syncToGoogleSheets(trip) {
+            if (!scriptUrl) return false;
+            try {
+                const dataToSend = {
+                    date: trip.date,
+                    client: trip.client || 'Sin nombre',
+                    origin: trip.origin,
+                    destination: trip.destination,
+                    distance: trip.distance,
+                    duration: trip.duration,
+                    rateKm: trip.rateKm,
+                    rateMin: trip.rateMin,
+                    toll: trip.toll || 0,
+                    ferry: trip.ferry || 0,
+                    fare: trip.tarifaTotal,
+                    discountAmount: trip.discountAmount || 0,
+                    total: trip.total
+                };
+                
+                await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataToSend)
+                });
+                return true;
+            } catch (error) {
+                console.error('Error syncing to Google Sheets:', error);
+                return false;
+            }
+        }
+
+        function shareQuotation() {
+            if (!currentTrip) return;
+            
+            let text = `🚗 *COTIZACIÓN DE VIAJE*\n*Transportes Masic*\n\n`;
+            
+            if (currentTrip.client !== 'Sin nombre') {
+                text += `👤 *Cliente:* ${currentTrip.client}\n`;
+            }
+            
+            text += `📍 *Origen:* ${currentTrip.origin}\n`;
+            text += `📍 *Destino:* ${currentTrip.destination}\n`;
+            text += `📏 *Distancia:* ${currentTrip.distance} km\n`;
+            text += `⏱️ *Tiempo:* ${currentTrip.duration} min\n\n`;
+            
+            text += `💰 *Tarifa + Peaje`;
+            if (currentTrip.ferry > 0) {
+                text += ` + Ferry`;
+            }
+            text += `:* ${formatCurrency(currentTrip.tarifaTotal)}\n`;
+            
+            if (currentTrip.discountPercent > 0) {
+                text += `🎁 *Descuento (${currentTrip.discountPercent}%):* -${formatCurrency(currentTrip.discountAmount)}\n`;
+            }
+            
+            text += `\n✅ *TOTAL A PAGAR: ${formatCurrency(currentTrip.total)}*`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            showStatus('✓ Abriendo WhatsApp para compartir cotización', 'success');
+        }
+
+        function openGoogleMaps() {
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+            if (origin && destination) {
+                window.open(`https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&travelmode=driving`, '_blank');
+            } else {
+                showStatus('Ingresa origen y destino para ver la ruta', 'warning');
+            }
+        }
+
+        function updateHistory() {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+            const count = document.getElementById('historyCount');
+
+            if (history.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+            count.textContent = history.length;
+
+            list.innerHTML = history.map(trip => `
+                <div class="history-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #1B9AAA;">${trip.date}</div>
+                            <div style="font-size: 13px; color: #4A4A4A; line-height: 1.6;">
+                                ${trip.client !== 'Sin nombre' ? `<div><strong>👤 ${trip.client}</strong></div>` : ''}
+                                <div>📍 ${trip.origin}</div>
+                                <div>📍 ${trip.destination}</div>
+                                ${trip.ferry > 0 ? `<div style="color: #1B9AAA; font-weight: 600;">⛴️ Ferry: ${formatCurrency(trip.ferry)}</div>` : ''}
+                                ${trip.discountPercent > 0 ? `<div style="color: #F59E0B; font-weight: 600;">🎁 Descuento: ${trip.discountPercent}%</div>` : ''}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteTrip(${trip.id})" title="Eliminar viaje">🗑️</button>
+                    </div>
+                    <div class="history-details">
+                        <div><strong>${trip.distance} km</strong></div>
+                        <div><strong>${trip.duration} min</strong></div>
+                        <div class="history-total">${formatCurrency(trip.total)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteTrip(id) {
+            if (confirm('¿Estás seguro de eliminar este viaje del historial?')) {
+                history = history.filter(trip => trip.id !== id);
+                localStorage.setItem('transportHistory', JSON.stringify(history));
+                updateHistory();
+                showStatus('✓ Viaje eliminado del historial', 'info');
+            }
+        }
+
+        function clearHistory() {
+            if (confirm('¿Estás seguro de eliminar todo el historial local? Esta acción no se puede deshacer.')) {
+                history = [];
+                localStorage.removeItem('transportHistory');
+                updateHistory();
+                showStatus('✓ Historial local eliminado', 'info');
+            }
+        }
+
+        function exportToCSV() {
+            if (history.length === 0) {
+                showStatus('No hay viajes para exportar', 'warning');
+                return;
+            }
+
+            const headers = 'Fecha,Nombre Cliente,Origen,Destino,Distancia,Tiempo,Tarifa/Km Aplicada,Tarifa/Min Aplicada,Peaje,Ferry/Transbordador,Subtotal,Descuento aplicado,Total a Pagar\n';
+            const rows = history.map(trip => 
+                `"${trip.date}","${trip.client}","${trip.origin}","${trip.destination}",${trip.distance},${trip.duration},${trip.rateKm},${trip.rateMin},${trip.toll || 0},${trip.ferry || 0},${trip.tarifaTotal},${trip.discountAmount || 0},${trip.total}`
+            ).join('\n');
+            
+            const csv = '\uFEFF' + headers + rows;
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `viajes_masic_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✓ Archivo CSV descargado correctamente', 'success');
+        }
+
+        window.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
