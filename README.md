@@ -282,8 +282,8 @@ Todos los derechos reservados © 2024 Transportes Masic
 ## 👨‍💻 Soporte
 
 ¿Necesitas ayuda? Contacta a:
-- 📧 Email: [tu-email@transportesmasic.cl]
-- 📱 WhatsApp: [+56 9 XXXX XXXX]
+- 📧 Email: [transportesmasic@transportesmasic.cl]
+- 📱 WhatsApp: [+56 9 6861 7845]
 - 🌐 Web: [www.transportesmasic.cl]
 
 ---
